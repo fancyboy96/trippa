@@ -1,0 +1,5 @@
+Flask
+Flask_Session
+pytz
+requests
+sqlite3
