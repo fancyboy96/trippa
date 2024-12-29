@@ -26,4 +26,9 @@ def get_db():
             db.close()
 
 # Create a cursor to execute SQL commands
-cursor = con.cursor()
+cur = con.cursor()
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    """Register user"""
+    return("TODO")
