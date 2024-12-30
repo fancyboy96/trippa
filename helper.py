@@ -1,11 +1,10 @@
 import requests
-
 from flask import redirect, render_template, session
 from functools import wraps
+import requests  # Ensure this is imported for the `lookup` function.
 
 def apology(message, code=400):
     """Render message as an apology to user."""
-
     def escape(s):
         """
         Escape special characters.
@@ -27,21 +26,18 @@ def apology(message, code=400):
 
     return render_template("apology.html", top=code, bottom=escape(message)), code
 
-    def login_required(f):
+def login_required(f):
     """
     Decorate routes to require login.
 
     https://flask.palletsprojects.com/en/latest/patterns/viewdecorators/
     """
-
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if session.get("user_id") is None:
             return redirect("/login")
         return f(*args, **kwargs)
-
     return decorated_function
-
 
 def lookup(symbol):
     """Look up quote for symbol."""
@@ -60,7 +56,6 @@ def lookup(symbol):
     except (KeyError, ValueError) as e:
         print(f"Data parsing error: {e}")
     return None
-
 
 def usd(value):
     """Format value as USD."""

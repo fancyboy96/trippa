@@ -17,7 +17,7 @@ db = SQLAlchemy(app)
 
 @app.route("/")
 def index():
-    return("TODO")
+    return("Hello World!")
 
 
 # User Management (Register, Log in, Log Out)
@@ -25,7 +25,6 @@ def index():
 def register():
     """Register user"""
     if request.method == "POST":
-
         flash("Registered successfully!")
         return(redirect(url_for("login")))
     else:
@@ -42,7 +41,7 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
-        if not username or not password
+        if not username or not password:
             return "Must provide username and password"
 
         user = User.query.filter_by(username=username).first()
