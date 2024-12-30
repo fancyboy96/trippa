@@ -25,10 +25,14 @@ def get_db():
         if db is not None:
             db.close()
 
-# Create a cursor to execute SQL commands
-cur = con.cursor()
+db = get_db()
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
+    return("TODO")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    """Login user"""
     return("TODO")
