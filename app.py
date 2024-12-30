@@ -5,6 +5,8 @@ from flask_session import session
 import sqlite3
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from helper import apology, login_required, lookup, usd
+
 # Flask app initialisation
 app = Flask(__name__)
 
@@ -30,6 +32,10 @@ db = get_db()
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
+    if request.method == "POST":
+        # Action
+    else:
+        return render_template("register.html")
     return("TODO")
 
 @app.route("/login", methods=["GET", "POST"])

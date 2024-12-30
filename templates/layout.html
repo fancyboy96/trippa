@@ -6,13 +6,31 @@
     <title>Trippa: {% block title %}{% endblock %}</title>
 </head>
 <body>
-    <nav>
-        {% if session["user_id"] %}
-                        <!-- Navbar if user is logged in -->
-                    {% else %}
-                        <!-- Navbar if user is logged out -->
-                    {% endif %}
-    </nav>
+    <div class="container">
+        <a href="/" class="logo">trippa</a>
+        <div class="navigation">
+            <nav>
+                {% if session["user_id"] %}
+                <!-- Navbar if user is logged in -->
+                <ul>
+                    <li><a href="/trips">My trips</a></li>
+                    <li><a href="/newtrip">Add new trip</a></li>
+                    <li><a href="/settings">Settings</a></li>
+                </ul>
+                <ul>
+                    <li><a href="/logout">Log out</a></li>
+                </ul>
+                {% else %}
+                <!-- Navbar if user is logged out -->
+                <ul>
+                    <li><a href="/register">Register</a></li>
+                    <li><a href="/login">Log in</a></li>
+                </ul>
+                {% endif %}
+            </nav>
+        </div>
+    </div>
+    
     <main>
         {% block main %}{% endblock %}
     </main>
