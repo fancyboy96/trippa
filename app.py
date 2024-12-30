@@ -33,6 +33,7 @@ db = get_db()
 def register():
     """Register user"""
     if request.method == "POST":
+        
         # Action
     else:
         return render_template("register.html")
