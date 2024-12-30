@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trippa: {% block title %}{% endblock %}</title>
+</head>
+<body>
+    <nav>
+        {% if session["user_id"] %}
+                        <!-- Navbar if user is logged in -->
+                    {% else %}
+                        <!-- Navbar if user is logged out -->
+                    {% endif %}
+    </nav>
+    <main>
+        {% block main %}{% endblock %}
+    </main>
+</body>
+</html>
