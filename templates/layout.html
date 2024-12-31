@@ -1,38 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='css/styles.css')}}"
+    />
     <title>Trippa: {% block title %}{% endblock %}</title>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <a href="/" class="logo">trippa</a>
-        <div class="navigation">
-            <nav>
-                {% if session["user_id"] %}
-                <!-- Navbar if user is logged in -->
-                <ul>
-                    <li><a href="/trips">My trips</a></li>
-                    <li><a href="/newtrip">Add new trip</a></li>
-                    <li><a href="/settings">Settings</a></li>
-                </ul>
-                <ul>
-                    <li><a href="/logout">Log out</a></li>
-                </ul>
-                {% else %}
-                <!-- Navbar if user is logged out -->
-                <ul>
-                    <li><a href="/register">Register</a></li>
-                    <li><a href="/login">Log in</a></li>
-                </ul>
-                {% endif %}
-            </nav>
-        </div>
+      <a href="/" class="logo">trippa</a>
+      <div class="navigation">
+        <nav>
+          {% if session["user_id"] %}
+          <!-- Navbar if user is logged in -->
+          <ul>
+          </ul>
+          <ul>
+            <li><a href="/settings">Settings</a></li>
+            <li><a href="/logout">Log out</a></li>
+          </ul>
+          {% else %}
+          <!-- Navbar if user is logged out -->
+          <ul>
+            <li><a href="/register">Register</a></li>
+            <li><a href="/login">Log in</a></li>
+          </ul>
+          {% endif %}
+        </nav>
+      </div>
     </div>
-    
+    {% if session["user_id"] %}
+    <!-- If user is logged in, then present a vertical nav bar -->
+    <div class="v_nav">
+    <ul>
+      <li><a href="/trips">My trips</a></li>
+      {% block trips %}{% endblock %}
+      <li><a href="/newtrip">Add new trip</a></li>
+    </ul>
+    </div>
+    {% endif %}
     <main>
-        {% block main %}{% endblock %}
+      {% block main %}{% endblock %}
     </main>
-</body>
+  </body>
 </html>

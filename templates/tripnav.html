@@ -1,0 +1,7 @@
+{% extends "layout.html" %} {% block trips %}
+<ul>
+  {% for row in rows %}
+  <li><a href="/{{ todo }}">{{ todo }}</a></li>
+  {% endfor %}
+</ul>
+{} {% endblock %}

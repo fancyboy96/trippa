@@ -1,29 +1,26 @@
 import os
 from flask import Flask, flash, redirect, render_template, request, session, url_for
-from flask_sqlalchemy import SQLAlchemy
+import sqlite3
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from helper import apology, login_required, lookup, usd
 
 # Flask app initialisation
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///trippa.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.secret_key = 'supersecretkey' # REPLACE!!
+app.secret_key = os.urandom(24)  # or use a custom secret key
 
-#Initialise database
-db = SQLAlchemy(app)
+def get_db_connection():
+    con = sqlite3.connect('trippa.db', check_same_thread=False)
+    con.row_factory = sqlite3.Row
+    return con
 
-class User(db.Model):  # db.Model is a declarative base class
-    __tablename__ = 'users'  # This explicitly maps the model to the 'users' table
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    hash = db.Column(db.String(200), nullable=False)
+db = get_db_connection()
 
-
-@app.route("/")
+@app.route("/", methods=["GET"])
+@login_required
 def index():
-    return("Hello World!")
+    user_id = session["user_id"]
+    return render_template("index.html", username=user_id)
 
 
 # User Management (Register, Log in, Log Out)
@@ -33,24 +30,31 @@ def register():
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
+        confirmation = request.form.get("confirmation")
 
         if not username or not password:
             error = "Must provide a username and password"
             return render_template("error.html", error=error) 
 
-        existing_user = Users.query.filter_by(username=username).first()
+        if password != confirmation:
+            error = "Passwords must match"
+            return render_template("error.html", error=error)
+
+        # Query database for username
+        existing_user = db.execute("SELECT username FROM users WHERE username = ?", (username,))[0]["username"]
         if existing_user:
+            db.close()
             error = "User already exists"
             return render_template("error.html", error=error)
-        
-        flash("Registered successfully!")
-        return(redirect(url_for("login")))
 
-        # Hash password and add user to the database
+        # Insert the new user into the database
         hashed_password = generate_password_hash(password)
-        new_user = User(username=username, hash=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
+        db.execute("INSERT INTO users (username, hash) VALUES (?, ?)", (username, hashed_password))
+        db.commit()
+        db.close()
+
+        flash("Registered successfully!")
+        return redirect(url_for("login"))
 
     else:
         return render_template("register.html")
@@ -68,12 +72,15 @@ def login():
         if not username or not password:
             return "Must provide username and password"
 
-        user = User.query.filter_by(username=username).first()
+        user = ("SELECT username FROM users WHERE username = ?", (username))[0]["username"]            
         if not user or not check_password_hash(user.hash, password):
-            return "Invalid username or password"
+            db.close()
+            return "Invalid username and/or password"
 
         session["user_id"] = user.id
+
         flash("Logged in successfully!")
+
         return redirect(url_for("index"))
     else:
         return render_template("login.html")
